@@ -91,3 +91,68 @@ curl -X GET "localhost:9200/dro/_search?pretty" -H 'Content-Type: application/js
 }
 '
 ```
+
+## Re-indexing (to changes index mappings or source documents)
+Note: In testing these locally, I encountered memory issues. If testing locally, use a small number of documents.
+
+Re-indexing can be performed using [update-by-query](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-update-by-query.html#picking-up-a-new-property) (to update in place) or [reindex](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/docs-reindex.html) (to reindex into a new index).
+
+### Update-by-query
+In this example, the `type` field will be indexed.
+
+#### Change the index
+```
+curl -X PUT "localhost:9200/dro/_mapping?pretty" -H 'Content-Type: application/json' -d'
+{
+  "properties": {
+    "type": {
+        "type": "keyword"
+    }
+  }
+}
+'
+```
+
+#### Update-by-query
+```
+curl -X POST "localhost:9200/dro/_update_by_query?refresh&conflicts=proceed&pretty"
+```
+
+#### Test
+```
+curl -X POST "localhost:9200/dro/_search?filter_path=hits.total&pretty" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "match": {
+      "type": "http://cocina.sul.stanford.edu/models/image.jsonld"
+    }
+  }
+}
+'
+```
+
+### Reindex
+In this example, `externalIdentifier` will be renamed to `druid` in the source documents.
+
+#### Create the new index
+```
+exe/index create --index=dro2
+```
+
+#### Re-index
+```
+curl -X POST "localhost:9200/_reindex?pretty&wait_for_completion=false" -H 'Content-Type: application/json' -d'
+{
+  "source": {
+    "index": "dro"
+  },
+  "dest": {
+    "index": "dro2"
+  },
+  "script": {
+    "lang": "painless",
+    "source": "ctx._source.druid = ctx._source.externalIdentifier;\nctx._source.remove(\"externalIdentifier\");"
+  }  
+}
+'
+```

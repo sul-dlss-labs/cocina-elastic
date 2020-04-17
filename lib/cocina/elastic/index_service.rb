@@ -2,6 +2,7 @@ module Cocina
   module Elastic
     class IndexService  < Thor
       class_option :log, :type => :boolean, :default => false
+      class_option :index, :default => "dro"
 
       desc 'create [DELETE_IF_EXISTS=true]', 'Create dro index, optionally deleting if it exists.'
       def create(delete_if_exists = true)
@@ -38,13 +39,13 @@ module Cocina
             }
           }
         }
-        client.indices.create(index: 'dro', body: body)
+        client.indices.create(index: options[:index], body: body)
         puts 'Created dro.'
       end
 
       desc 'delete', 'Delete dro index'
       def delete
-        client.indices.delete(index: 'dro')
+        client.indices.delete(index: options[:index])
         puts 'Deleted dro.'
       end
 
@@ -55,7 +56,7 @@ module Cocina
       end
 
       def exists?
-        client.indices.exists(index: 'dro')
+        client.indices.exists(index: options[:index])
       end
     end
   end
