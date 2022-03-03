@@ -16,9 +16,8 @@ GEM
       openapi_parser
       thor
       zeitwerk (~> 2.1)
-    commonmarker (0.21.0)
-      ruby-enum (~> 0.5)
-    concurrent-ruby (1.1.6)
+    commonmarker (0.23.4)
+    concurrent-ruby (1.1.9)
     dry-configurable (0.11.5)
       concurrent-ruby (~> 1.0)
       dry-core (~> 0.4, >= 0.4.7)
@@ -58,7 +57,7 @@ GEM
       i18n (>= 1.6, < 2)
     faraday (1.0.1)
       multipart-post (>= 1.2, < 3)
-    i18n (1.8.2)
+    i18n (1.10.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     minitest (5.14.1)
@@ -69,8 +68,6 @@ GEM
       psych (~> 3.1)
     openapi_parser (0.10.0)
     psych (3.1.0)
-    ruby-enum (0.8.0)
-      i18n
     thor (1.0.1)
     thread_safe (0.3.6)
     tzinfo (1.2.7)
